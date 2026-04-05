@@ -1,0 +1,165 @@
+// Source - https://stackoverflow.com/q/18629327
+// Posted by user-S
+// Retrieved 2026-04-02, License - CC BY-SA 3.0
+
+<html>
+
+<head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <%- include('partials/header') %>
+
+        <div class="page-bg">
+            <div class="phone-frame">
+
+                <!-- Top dots decoration -->
+                <div class="dot-pattern"></div>
+
+                <!-- Logo Section -->
+                <div class="logo-section">
+                    <p class="welcome-text">Welcome to</p>
+                    <div class="logo-wrapper">
+                        <img src="/Resource/logo.png" alt="My11Circle" class="logo-img" />
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div class="card">
+
+                    <h2 class="card-title">Login</h2>
+
+                    <!-- Error message (shown from server or JS) -->
+                    <% if (typeof error !=='undefined' && error) { %>
+                        <div class="error-box">
+                            <%= error %>
+                        </div>
+                        <% } %>
+                            <div class="error-box" id="jsError" style="display:none;"></div>
+
+                            <!-- Email Field -->
+                            <div class="field-group">
+                                <div class="field-dots">• • •</div>
+                                <div class="input-row">
+                                    <div class="input-icon-box">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555"
+                                            stroke-width="2">
+                                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                                            <path d="M2 7l10 7 10-7" />
+                                        </svg>
+                                    </div>
+                                    <input type="email" id="email" placeholder="" class="field-input"
+                                        autocomplete="email" />
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="field-group">
+                                <div class="field-dots">• • •</div>
+                                <div class="input-row">
+                                    <div class="input-icon-box">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555"
+                                            stroke-width="2">
+                                            <circle cx="12" cy="16" r="1" fill="#555" />
+                                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                    </div>
+                                    <input type="password" id="password" placeholder="" class="field-input"
+                                        autocomplete="current-password" />
+                                </div>
+                            </div>
+
+                            <!-- Login Button -->
+                            <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+                                <span id="btnText">Login</span>
+                                <span id="btnSpinner" class="spinner" style="display:none;"></span>
+                            </button>
+
+                            <!-- 18+ & Terms -->
+                            <div class="terms-area">
+                                <div class="badge-18">18+</div>
+                                <p class="terms-text">
+                                    By logging in, you accept you are 18+ and agree to our
+                                    <a href="#" class="terms-link">T&C</a> &amp;
+                                    <a href="#" class="terms-link">Privacy Policy</a>
+                                </p>
+                            </div>
+
+                </div><!-- end card -->
+
+                <!-- Spacer -->
+                <div class="spacer"></div>
+
+                <!-- Mobile login link -->
+                <div class="mobile-link-area">
+                    <a href="/register" class="mobile-link">
+                        Login/Register using - <span class="mobile-highlight">Mobile Number</span>
+                    </a>
+                </div>
+
+                <!-- Bottom bar -->
+                <div class="bottom-bar">
+                    <p>© 2018 Play Games 24×7 Pvt. Ltd All rights Reserved</p>
+                </div>
+
+            </div><!-- end phone-frame -->
+        </div><!-- end page-bg -->
+
+        <script>
+            async function handleLogin() {
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const errBox = document.getElementById('jsError');
+                const btnText = document.getElementById('btnText');
+                const spinner = document.getElementById('btnSpinner');
+                const btn = document.getElementById('loginBtn');
+
+                errBox.style.display = 'none';
+
+                if (!email || !password) {
+                    errBox.textContent = 'Please enter your email and password.';
+                    errBox.style.display = 'block';
+                    return;
+                }
+
+                btnText.style.display = 'none';
+                spinner.style.display = 'inline-block';
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        window.location.href = '/dashboard';
+                    } else {
+                        errBox.textContent = data.message || 'Login failed. Please try again.';
+                        errBox.style.display = 'block';
+                    }
+                } catch (e) {
+                    errBox.textContent = 'Something went wrong. Please try again.';
+                    errBox.style.display = 'block';
+                } finally {
+                    btnText.style.display = 'inline';
+                    spinner.style.display = 'none';
+                    btn.disabled = false;
+                }
+            }
+
+            // Allow Enter key
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Enter') handleLogin();
+            });
+        </script>
+
+        <%- include('partials/footer') %>
+</body>
+
+</html>
