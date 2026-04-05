@@ -197,6 +197,14 @@
         object-fit: contain;
     }
 
+
+    .match-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
     .match-center h3 {
         font-size: 16px;
         margin: 0 0 6px 0;
@@ -264,7 +272,11 @@
                     <h3>VS</h3>
                     <div class="match-time">
                         <span class="score">
-                            <%=match.scores[0].score%> - <%=match.scores[1].score%>
+                            <% if (match.scores && match.scores.length>= 2) { %>
+                                <%= match.scores[0].score %> - <%= match.scores[1].score %>
+                                        <% } else { %>
+                                            Finalizing...
+                                            <% } %>
                         </span>
                     </div>
                 </div>

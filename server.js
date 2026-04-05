@@ -41,7 +41,6 @@ app.use('/api/auth', userRoute);
 
 
 // routes
-app.use('/', userRoute);
 app.use('/dashboard', dashboard);
 
 

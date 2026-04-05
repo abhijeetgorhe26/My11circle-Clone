@@ -296,7 +296,7 @@
                                     <line x1="12" y1="18" x2="12" y2="18" stroke-linecap="round" stroke-width="2.5" />
                                 </svg>
                             </div>
-                            <input type="tel" id="mobile" placeholder="" class="field-input" maxlength="10" />
+                            <input type="text" id="name" placeholder="" class="field-input" maxlength="10" />
                         </div>
                     </div>
 
@@ -354,7 +354,7 @@
 
         <!-- Back to login link -->
         <div class="mobile-link-area">
-            <a href="/login" class="mobile-link">
+            <a href="/api/auth/login" class="mobile-link">
                 Already have an account? - <span class="mobile-highlight">Login</span>
             </a>
         </div>
@@ -368,11 +368,15 @@
 </div>
 
 <script>
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleLogin();
+    });
     async function handleRegister() {
-        const mobile = document.getElementById('mobile').value.trim();
+        console.log('yes register js working well')
+        const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+        const password = document.getElementById('password').value.trim();
         const errBox = document.getElementById('jsError');
         const btnText = document.getElementById('btnText');
         const spinner = document.getElementById('btnSpinner');
@@ -380,21 +384,19 @@
 
         errBox.style.display = 'none';
 
-        if (!mobile || !email || !password || !confirmPassword) {
+        if (!name || !email || !password) {
             errBox.textContent = 'Please fill in all fields.';
             errBox.style.display = 'block';
             return;
         }
-        if (!/^\d{10}$/.test(mobile)) {
-            errBox.textContent = 'Enter a valid 10-digit mobile number.';
+        // Add '!' to check if the email does NOT match the pattern
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+            errBox.textContent = 'Enter a valid email address.'; // Updated error text
             errBox.style.display = 'block';
             return;
         }
-        if (password !== confirmPassword) {
-            errBox.textContent = 'Passwords do not match.';
-            errBox.style.display = 'block';
-            return;
-        }
+
+
 
         btnText.style.display = 'none';
         spinner.style.display = 'inline-block';
@@ -404,12 +406,13 @@
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mobile, email, password })
+                body: JSON.stringify({ name, email, password })
             });
-            const data = await res.json();
 
+
+            console.log
             if (res.ok) {
-                window.location.href = '/login';
+                window.location.href = '/api/auth/verify';
             } else {
                 errBox.textContent = data.message || 'Registration failed.';
                 errBox.style.display = 'block';
@@ -423,4 +426,6 @@
             btn.disabled = false;
         }
     }
+
+
 </script>

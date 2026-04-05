@@ -1,0 +1,469 @@
+<meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+
+<style>
+    /* public/css/style.css */
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        background: #d0d0d0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ── Outer page background ── */
+    .page-bg {
+        width: 100%;
+        min-height: 100vh;
+        background: #d0d0d0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    /* ── Phone frame (the rounded card wrapper) ── */
+    .phone-frame {
+        width: 100%;
+        max-width: 420px;
+        min-height: 92vh;
+        background: #e0e0e0;
+        border-radius: 28px;
+        box-shadow:
+            0 4px 6px rgba(0, 0, 0, 0.12),
+            0 12px 40px rgba(0, 0, 0, 0.18);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* ── Dot pattern top area ── */
+    .dot-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 180px;
+        background-image: radial-gradient(circle, #bbb 1.2px, transparent 1.2px);
+        background-size: 18px 18px;
+        opacity: 0.55;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ── Logo section ── */
+    .logo-section {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 32px 24px 20px;
+    }
+
+    .welcome-text {
+        font-size: 15px;
+        font-weight: 400;
+        color: #333;
+        margin-bottom: 10px;
+        letter-spacing: 0.2px;
+    }
+
+    .logo-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logo-img {
+        height: 46px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    /* ── White card in the middle ── */
+    .card {
+        position: relative;
+        z-index: 1;
+        background: #e8e8e8;
+        margin: 12px 16px 0;
+        border-radius: 16px;
+        padding: 28px 20px 24px;
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.8),
+            0 2px 8px rgba(0, 0, 0, 0.07);
+    }
+
+    .card-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #1a1a1a;
+        text-align: center;
+        margin-bottom: 24px;
+        letter-spacing: -0.3px;
+    }
+
+    /* ── Error box ── */
+    .error-box {
+        background: #fdecea;
+        color: #c0392b;
+        font-size: 13px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        border-left: 3px solid #c0392b;
+    }
+
+    /* ── Field group (dots label + input row) ── */
+    .field-group {
+        margin-bottom: 14px;
+    }
+
+    .field-dots {
+        font-size: 11px;
+        color: #999;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+        padding-left: 4px;
+    }
+
+    .input-row {
+        display: flex;
+        align-items: stretch;
+        background: #ffffff;
+        border: 1.5px solid #d8d8d8;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-row:focus-within {
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.12);
+    }
+
+    .input-icon-box {
+        width: 52px;
+        min-height: 52px;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1.5px solid #d8d8d8;
+        flex-shrink: 0;
+    }
+
+    .field-input {
+        flex: 1;
+        height: 52px;
+        padding: 0 16px;
+        font-size: 15px;
+        color: #1a1a1a;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .field-input::placeholder {
+        color: #bbb;
+    }
+
+    /* ── Login / Register button ── */
+    .login-btn {
+        width: 100%;
+        height: 54px;
+        margin-top: 8px;
+        background: #27ae60;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 4px 14px rgba(39, 174, 96, 0.4);
+        transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+
+    .login-btn:hover:not(:disabled) {
+        background: #219a52;
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.5);
+        transform: translateY(-1px);
+    }
+
+    .login-btn:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.35);
+    }
+
+    .login-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    /* Spinner inside button */
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ── 18+ badge & terms ── */
+    .terms-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+    .badge-18 {
+        width: 30px;
+        height: 30px;
+        background: #e74c3c;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 800;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .terms-text {
+        font-size: 12.5px;
+        color: #777;
+        text-align: center;
+        line-height: 1.55;
+    }
+
+    .terms-link {
+        color: #27ae60;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .terms-link:hover {
+        text-decoration: underline;
+    }
+
+    /* ── Spacer ── */
+    .spacer {
+        flex: 1;
+        min-height: 40px;
+    }
+
+    /* ── Mobile number link at bottom ── */
+    .mobile-link-area {
+        text-align: center;
+        padding: 0 20px 24px;
+    }
+
+    .mobile-link {
+        font-size: 15px;
+        color: #444;
+        text-decoration: none;
+        font-weight: 400;
+    }
+
+    .mobile-highlight {
+        color: #e74c3c;
+        font-weight: 700;
+    }
+
+    .mobile-link:hover .mobile-highlight {
+        text-decoration: underline;
+    }
+
+    /* ── Bottom copyright bar ── */
+    .bottom-bar {
+        background: #1a1a1a;
+        padding: 14px 20px;
+        text-align: center;
+    }
+
+    .bottom-bar p {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+        .page-bg {
+            padding: 0;
+        }
+
+        .phone-frame {
+            border-radius: 0;
+            min-height: 100vh;
+            max-width: 100%;
+        }
+    }
+</style>
+
+<div class="page-bg">
+    <div class="phone-frame">
+
+        <!-- Top dots / image -->
+        <div class="dot-pattern"></div>
+
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <p class="welcome-text">Welcome to</p>
+            <div class="logo-wrapper">
+                <img src="/Resource/logo.png" alt="My11Circle" class="logo-img" />
+            </div>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+
+            <!-- ✅ CHANGED TITLE -->
+            <h2 class="card-title">Verify with OTP</h2>
+
+            <!-- Info text -->
+            <p style="text-align:center; font-size:14px; color:#555; margin-bottom:10px;">
+                OTP has been sent to your email
+            </p>
+
+            <p style="text-align:center; color:#c0392b; font-weight:600; cursor:pointer; margin-bottom:16px;">
+                Change
+            </p>
+
+            <!-- Error -->
+            <div class="error-box" id="jsError" style="display:none;"></div>
+
+            <!-- Email Field (optional readonly) -->
+            <div class="field-group">
+                <div class="field-dots">Email</div>
+                <div class="input-row">
+                    <div class="input-icon-box">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M2 7l10 7 10-7" />
+                        </svg>
+                    </div>
+                    <input type="email" id="email" class="field-input" />
+                </div>
+            </div>
+
+            <!-- ✅ OTP FIELD (REPLACED PASSWORD) -->
+            <div class="field-group">
+                <div class="field-dots">Enter OTP</div>
+                <div class="input-row">
+                    <div class="input-icon-box">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82" />
+                            <path d="M4.6 9a1.65 1.65 0 0 0-.33-1.82" />
+                        </svg>
+                    </div>
+                    <input type="text" id="otp" maxlength="6" class="field-input" placeholder="Enter 6-digit OTP" />
+                </div>
+            </div>
+
+            <!-- ✅ VERIFY BUTTON -->
+            <button class="login-btn" id="verifyBtn" onclick="handleVerify()">
+                <span id="btnText">Verify</span>
+                <span id="btnSpinner" class="spinner" style="display:none;"></span>
+            </button>
+
+            <!-- Terms -->
+            <div class="terms-area">
+                <div class="badge-18">18+</div>
+                <p class="terms-text">
+                    By continuing, you accept you are 18+ and agree to our
+                    <a href="#" class="terms-link">T&C</a> &
+                    <a href="#" class="terms-link">Privacy Policy</a>
+                </p>
+            </div>
+
+        </div>
+
+        <div class="spacer"></div>
+
+        <!-- Footer -->
+        <div class="bottom-bar">
+            <p>© 2026 Abhijeet Gorhe 24×7 Pvt. Ltd All rights Reserved</p>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    async function handleVerify() {
+        const email = document.getElementById('email').value.trim();
+        const otp = document.getElementById('otp').value.trim();
+        const errBox = document.getElementById('jsError');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('btnSpinner');
+        const btn = document.getElementById('verifyBtn');
+
+        errBox.style.display = 'none';
+
+        if (!otp || !email) {
+            errBox.textContent = 'Please enter OTP or email.';
+            errBox.style.display = 'block';
+            return;
+        }
+
+        console.log(otp, 'it is otp');
+        console.log(email, 'it is email');
+
+        btnText.style.display = 'none';
+        spinner.style.display = 'inline-block';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/auth/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            });
+
+            console.log(res.body);
+
+            console.log(res.ok === false, "i am infected")
+
+            if (res.ok) {
+                window.location.href = '/api/auth/login';
+            } else {
+                errBox.textContent = 'Invalid OTP';
+                errBox.style.display = 'block';
+            }
+
+        } catch (err) {
+            console.log(err);
+            errBox.textContent = 'Something went wrong';
+            errBox.style.display = 'block';
+        } finally {
+            btnText.style.display = 'inline';
+            spinner.style.display = 'none';
+            btn.disabled = false;
+        }
+    }
+</script>

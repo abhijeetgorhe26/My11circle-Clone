@@ -1,57 +1,66 @@
 
-import User from '../models/user.js';
+import User from '../models/userSchema.js';
 import { sendEmail } from "../utils/mailSender.js";
 import generateOtp from "../utils/otpGenerator.js";
+import JWT from 'jsonwebtoken';
+import 'dotenv/config'
 
 
 
 
 
-
+const tempUsers = new Map();
 
 
 
 
 // verfiy otp 
 export const verifyOtp = async (req, res) => {
+
     try {
         const { email, otp } = req.body;
 
-        const user = await User.findOne({ email });
-        console.log(user);
-        if (!user) {
+        const tempUser = tempUsers.get(email);
+
+        if (!tempUser) {
             return res.status(400).json({
                 success: false,
-                message: "User not found"
+                message: "No registration found. Please register again."
             });
         }
 
-        // ⏰ Check expiry
-        if (!user.otpExpired || user.otpExpired < Date.now()) {
+        // ⏰ Expiry check
+        if (tempUser.otpExpired < Date.now()) {
+            tempUsers.delete(email);
+
             return res.status(400).json({
                 success: false,
                 message: "OTP expired"
             });
         }
 
-        // 🔐 Check OTP match
-        if (user.otpCode !== otp) {
+        // 🔐 OTP check
+        if (tempUser.otpCode !== otp) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid OTP"
             });
         }
 
-        // ✅ Success → verify user
-        user.isVerfied = true;
-        user.otpCode = undefined;
-        user.otpExpired = undefined;
+        // ✅ SAVE TO DB AFTER VERIFY
+        const newUser = await User.create({
+            name: tempUser.name,
+            email: tempUser.email,
+            password: tempUser.password,
+            isVerified: true
+        });
 
-        await user.save();
+        // 🧹 Remove from temp storage
+        tempUsers.delete(email);
 
         res.status(200).json({
             success: true,
-            message: "Email verified successfully"
+            message: "User verified & saved to DB"
         });
 
     } catch (error) {
@@ -67,59 +76,44 @@ export const verifyOtp = async (req, res) => {
 // for register 
 export const register = async (req, res) => {
     try {
-        const { name, email, password, } = req.body;
+        const { name, email, password } = req.body;
 
-        // check user existance in DB
         const existUser = await User.findOne({ email });
 
-        if (existUser && existUser.isVerfied) {
-            return res.status(201).json({
+        if (existUser) {
+            return res.status(400).json({
                 success: false,
-                error: "User already exist in DB"
-            })
-        }
-        // 🔥 Generate OTP
-        const otp = generateOtp();
-
-        const otpExpired = Date.now() + 5 * 60 * 1000;
-        console.log("OTP:", otp);
-
-        // 🔥 Create user
-        if (!existUser) {
-            const user = await User.create({
-                name,
-                email,
-                password,
-                otpCode: otp,
-                otpExpired: otpExpired
+                message: "User already exists"
             });
         }
-        else {
-            existUser.name = name;
-            existUser.password = password;
-            existUser.otpCode = otp;
-            existUser.otpExpired = otpExpired;
 
-            await existUser.save();
-        }
+        const otp = generateOtp();
+        const otpExpired = Date.now() + 5 * 60 * 1000;
 
-        // for testing
+        console.log("OTP:", otp);
 
-        // 🔥 Send OTP (just for info)
-        await sendEmail(
+        // ✅ Store in TEMP MEMORY (not DB)
+        tempUsers.set(email, {
+            name,
             email,
-            "Welcome to App 🎉",
-            `Your OTP is ${otp}`
-        );
+            password,
+            otpCode: otp,
+            otpExpired
+        });
 
-        res.status(201).json({
+        await sendEmail(email, "OTP Verification", `Your OTP is ${otp}`);
+
+        console.log('i sent otp please verify it')
+        res.status(200).json({
             success: true,
-            message: "User registered & OTP sent to email"
+            message: "OTP sent to email"
         });
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Failed to send OTP" });
+        res.status(500).json({
+            message: "Failed to send OTP"
+        });
     }
 };
 
@@ -141,13 +135,15 @@ export const login = async (req, res) => {
         console.log(user + "I am present inside userAuth Login function");
         if (user.email === email) {
             if (user.password === password) {
+                const token = JWT.sign({ _id: user._id }, process.env.JWT_token, { expiresIn: '7d' });
                 res.status(200).json({
                     success: true,
                     user: {
                         id: user._id,
                         name: user.name,
                         email: user.email
-                    }
+                    },
+                    token
                 });
             }
             else {
@@ -205,6 +201,17 @@ export const toLogin = async (req, res) => {
 }
 
 
+export const toVerify = async (req, res) => {
+    try {
+        console.log('yes i am loaded');
+        res.render('verify')
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Failed to verify' });
+    }
+}
+
+
 export const test = async (req, res) => {
     try {
         res.send("Testing successful...");
@@ -213,5 +220,16 @@ export const test = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch data' })
     }
 }
+
+
+export const getProfile = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.user._id);
+    } catch (error) {
+
+    }
+}
+
 
 

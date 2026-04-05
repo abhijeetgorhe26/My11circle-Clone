@@ -1,5 +1,6 @@
 import express from 'express';
-import { login, register, verifyOtp, toRegister, toLogin } from '../controllers/userAuth.js';
+import { login, register, verifyOtp, toRegister, toLogin, toVerify, test } from '../controllers/userAuth.js';
+import { requireLogin } from '../middlewares/authMiddleware.js';
 
 
 const router = express.Router();
@@ -7,11 +8,13 @@ const router = express.Router();
 // GET Route
 router.get('/register', toRegister);
 router.get('/login', toLogin);
+router.get('/verify', toVerify);
 
 
 // POST route
-router.post('/login', login);
+router.post('/login', requireLogin, login);
 router.post('/register', register);
-router.post('/verfiy-otp', verifyOtp);
+router.post('/verify', verifyOtp);
+router.post('/test', test)
 
-export default router;
+export default router; 
