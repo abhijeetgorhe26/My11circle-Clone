@@ -65,8 +65,15 @@ npm install
 ```bash
 PORT=3000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+JWT_SECRET=your_jwt_secret
 SPORTS_API_KEY=your_api_key
+
+MAIL_USER=your_email@gmail.com
+MAIL_PASSWORD=your_email_app_password
+MAIL_PORT=465
+MAIL_HOST=smtp.gmail.com
 ```
 ### 5. Run the server
+```bash
 npm start
+```
