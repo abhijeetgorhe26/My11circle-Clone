@@ -51,16 +51,22 @@ Follow these steps to run the project locally:
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/your-username/your-repo-name.git
+```
 ### 2. Navigate to project folder
 ```bash
 cd your-repo-name
+```
+
 ### 3. npm install
+```bash
+npm install
+```
 ### 4. Create .env file
 ```bash
 PORT=3000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 SPORTS_API_KEY=your_api_key
+```
 ### 5. Run the server
-```bash
 npm start
