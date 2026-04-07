@@ -446,22 +446,33 @@
         btn.disabled = true;
 
         try {
-            const res = await fetch('api/auth/login', {
+            const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
 
 
+            const contentType = res.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                // Server returned HTML (error page) — not JSON
+                errBox.textContent = 'Server error. Please try again.';
+                errBox.style.display = 'block';
+                return;
+            }
 
 
+            console.log(res.ok, 'can you see me ?');
+            const data = await res.json();
+            console.log(data.message)
             if (res.ok) {
                 window.location.href = '/dashboard/upcomingDashBoard';
             } else {
-                errBox.textContent = data.message || 'Login failed. Please try again.';
+                errBox.textContent = errBox.textContent = data.error || data.message || 'Login failed.';
                 errBox.style.display = 'block';
             }
         } catch (e) {
+            console.log(e);
             errBox.textContent = 'Something went wrong. Please try again.';
             errBox.style.display = 'block';
         } finally {

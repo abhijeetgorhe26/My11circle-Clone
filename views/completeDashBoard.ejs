@@ -247,7 +247,7 @@
         <ul class="sidebar-menu">
             <li>My Account</li>
             <li>About us</li>
-            <li style="color: #c0392b;">Logout</li>
+            <li id="logout-btn" style="color: #c0392b;">Logout</li>
         </ul>
     </div>
 
@@ -297,6 +297,24 @@
     const upcomingBtn = document.getElementById('upcoming-btn');
     const liveBtn = document.getElementById('live-btn');
 
+
+    const logoutBtn = document.getElementById('logout-btn');
+    // logout btn 
+
+    // Tab navigation logic
+    liveBtn.addEventListener('click', function () {
+        window.location.href = '/dashboard/liveDashBoard';
+    });
+
+    upcomingBtn.addEventListener('click', function () {
+        window.location.href = '/dashboard/upcomingDashboard';
+    });
+
+    
+    logoutBtn.addEventListener('click', () => {
+        console.log("Click on logout btn")
+        window.location.href = '/api/auth/logout';
+    })
     // Sidebar Logic (Matching your other dashboards)
     menuBtn.addEventListener('click', () => {
         sidebar.style.display = 'block';
@@ -311,12 +329,5 @@
     closeBtn.addEventListener('click', hideSidebar);
     overlay.addEventListener('click', hideSidebar);
 
-    // Tab navigation logic
-    liveBtn.addEventListener('click', function () {
-        window.location.href = '/dashboard/liveDashBoard';
-    });
 
-    upcomingBtn.addEventListener('click', function () {
-        window.location.href = '/dashboard/upcomingDashboard';
-    });
 </script>

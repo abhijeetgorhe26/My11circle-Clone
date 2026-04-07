@@ -1,6 +1,5 @@
 import express from 'express';
 import 'dotenv/config';
-
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+
 // ── EJS Setup ──
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -37,14 +37,19 @@ import dashboard from './routes/dashBoardRoute.js';
 
 
 // routes users middleware 
+
+
 app.use('/api/auth', userRoute);
 
 
 // routes
 app.use('/dashboard', dashboard);
 
-
-app.get('/', async (req, res) => {
+app.use((req, res, next) => {
+    console.log(`📥 ${req.method} ${req.originalUrl}`);
+    next();
+});
+app.get('/login', async (req, res) => {
     try {
         res.render('login');
     }
@@ -58,6 +63,6 @@ app.get('/', async (req, res) => {
 connectDB();
 
 app.listen(port, () => {
-    console.log("Server running on http://localhost:3000/");
+    console.log("Server running on http://localhost:3000/login");
 });
 

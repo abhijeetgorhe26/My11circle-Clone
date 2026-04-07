@@ -263,7 +263,7 @@
     <ul class="sidebar-menu">
       <li>My Account</li>
       <li>About us</li>
-      <li style="color: #c0392b;">Logout</li>
+      <li id="logout-btn" style="color: #c0392b;">Logout</li>
     </ul>
   </div>
 
@@ -326,12 +326,30 @@
   const overlay = document.getElementById('overlay');
   const completedBtn = document.getElementById('completed-btn');
   const liveBtn = document.getElementById('live-btn');
+  const logoutBtn = document.getElementById('logout-btn');
 
-  // Sidebar Logic
+
+
+  console.log("it is null", completedBtn);
+  console.log("it is also null", liveBtn);
   menuBtn.addEventListener('click', () => {
     sidebar.style.display = 'block';
     overlay.style.display = 'block';
   });
+
+  // Tab Navigation
+  liveBtn.addEventListener('click', () => {
+    console.log("Live btn was clicked")
+    window.location.href = '/dashboard/liveDashBoard';
+  });
+
+  completedBtn.addEventListener('click', () => {
+    console.log("completed btn was clicked")
+    window.location.href = '/dashboard/completeDashBoard';
+  });
+
+  // Sidebar Logic
+
 
   const hideSidebar = () => {
     sidebar.style.display = 'none';
@@ -341,12 +359,12 @@
   closeBtn.addEventListener('click', hideSidebar);
   overlay.addEventListener('click', hideSidebar);
 
-  // Tab Navigation
-  liveBtn.addEventListener('click', () => {
-    window.location.href = '/dashboard/liveDashBoard';
+  // logout btn 
+  logoutBtn.addEventListener('click', () => {
+    console.log("Click on logout btn")
+    window.location.href = '/api/auth/logout';
   });
 
-  completedBtn.addEventListener('click', () => {
-    window.location.href = '/dashboard/completeDashBoard';
-  });
+
+
 </script>

@@ -2,7 +2,7 @@
 import User from '../models/userSchema.js';
 import { sendEmail } from "../utils/mailSender.js";
 import generateOtp from "../utils/otpGenerator.js";
-import JWT from 'jsonwebtoken';
+
 import 'dotenv/config'
 
 
@@ -120,6 +120,9 @@ export const register = async (req, res) => {
 // for logged in
 export const login = async (req, res) => {
     try {
+
+
+        console.log("Login is calling")
         const { email, password } = req.body;
 
         console.log(password);
@@ -135,15 +138,13 @@ export const login = async (req, res) => {
         console.log(user + "I am present inside userAuth Login function");
         if (user.email === email) {
             if (user.password === password) {
-                const token = JWT.sign({ _id: user._id }, process.env.JWT_token, { expiresIn: '7d' });
                 res.status(200).json({
                     success: true,
                     user: {
                         id: user._id,
                         name: user.name,
                         email: user.email
-                    },
-                    token
+                    }
                 });
             }
             else {

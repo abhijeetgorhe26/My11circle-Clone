@@ -232,7 +232,7 @@
         <ul class="sidebar-menu">
             <li>My Account</li>
             <li>About us</li>
-            <li style="color: #c0392b;">Logout</li>
+            <li id="logout-btn" style="color: #c0392b;">Logout</li>
         </ul>
     </div>
 
@@ -279,6 +279,28 @@
     const upcomingBtn = document.getElementById('upcoming-btn');
     const completedBtn = document.getElementById('completed-btn');
 
+
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Navigation Logic
+    if (completedBtn) {
+        completedBtn.addEventListener('click', () => {
+            window.location.href = '/dashboard/completeDashBoard';
+        });
+    }
+
+    if (upcomingBtn) {
+        upcomingBtn.addEventListener('click', () => {
+            window.location.href = '/dashboard/upcomingDashboard';
+        });
+    }
+
+    // logout btn 
+    logoutBtn.addEventListener('click', () => {
+        console.log("Click on logout btn")
+        window.location.href = '/api/auth/logout';
+    })
+
     // Sidebar Logic
     menuBtn.addEventListener('click', () => {
         sidebar.style.display = 'block';
@@ -293,16 +315,5 @@
     closeBtn.addEventListener('click', hideSidebar);
     overlay.addEventListener('click', hideSidebar);
 
-    // Navigation Logic
-    if (completedBtn) {
-        completedBtn.addEventListener('click', () => {
-            window.location.href = '/dashboard/completeDashBoard';
-        });
-    }
 
-    if (upcomingBtn) {
-        upcomingBtn.addEventListener('click', () => {
-            window.location.href = '/dashboard/upcomingDashboard';
-        });
-    }
 </script>
