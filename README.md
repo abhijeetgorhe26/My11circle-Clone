@@ -78,9 +78,7 @@ MAIL_HOST=smtp.gmail.com
 npm start
 ```
 
-
 ## 🎥 Demo Video
-
-## 🎥 Demo Video
-
+```bash
 https://youtu.be/1jA8WQfXGt0
+```
