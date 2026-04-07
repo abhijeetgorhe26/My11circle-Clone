@@ -450,7 +450,7 @@
             console.log(res.ok === false, "i am infected")
 
             if (res.ok) {
-                window.location.href = '/api/auth/login';
+                window.location.href = '/login';
             } else {
                 errBox.textContent = 'Invalid OTP';
                 errBox.style.display = 'block';
