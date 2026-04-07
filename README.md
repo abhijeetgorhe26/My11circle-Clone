@@ -79,6 +79,4 @@ npm start
 ```
 
 ## 🎥 Demo Video
-```bash
 https://youtu.be/1jA8WQfXGt0
-```
