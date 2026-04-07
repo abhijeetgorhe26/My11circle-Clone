@@ -81,4 +81,6 @@ npm start
 
 ## 🎥 Demo Video
 
-[Watch Demo](https://github.com/abhijeetgorhe26/My11circle-Clone/blob/main/Resource/project.mp4)
+## 🎥 Demo Video
+
+https://youtu.be/1jA8WQfXGt0
